@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Jeux Sportifs Mondiaux — Zone Total Sport</title>
+  <meta name="description" content="Banque mondiale de jeux sportifs pour l'éducation physique — Zone Total Sport">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Canvas background -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Loading screen -->
+  <div id="loading" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-logo">⚡</div>
+      <div class="loading-title">JEUX SPORTIFS MONDIAUX</div>
+      <div class="loading-subtitle">Zone Total Sport</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-bar-container">
+        <div class="loading-bar" id="loading-bar"></div>
+      </div>
+      <div class="loading-text" id="loading-text">Chargement des jeux...</div>
+    </div>
+  </div>
+
+  <!-- Main app -->
+  <div id="app" class="hidden">
+
+    <!-- Header fixe -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <span class="logo-icon">⚡</span>
+          <div class="logo-text">
+            <span class="logo-main">ZONE TOTAL SPORT</span>
+            <span class="logo-sub">JEUX SPORTIFS MONDIAUX</span>
+          </div>
+        </div>
+
+        <div class="header-stats">
+          <div class="hstat" id="hstat-jeux">
+            <span class="hstat-num">—</span>
+            <span class="hstat-label">JEUX</span>
+          </div>
+          <div class="hstat">
+            <span class="hstat-num">16</span>
+            <span class="hstat-label">CATÉGORIES</span>
+          </div>
+          <div class="hstat">
+            <span class="hstat-num">50+</span>
+            <span class="hstat-label">PAYS</span>
+          </div>
+        </div>
+
+        <nav class="header-nav">
+          <a href="#" class="nav-link active">🎮 Jeux</a>
+          <a href="https://zonetotalsport.ca" class="nav-link" target="_blank">🏠 Accueil</a>
+          <a href="#" class="nav-link">📚 SAÉ</a>
+          <a href="#" class="nav-link">🎵 Musique</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge">🌍 Base de données mondiale</div>
+        <h1 class="hero-title">
+          <span class="gradient-text">Jeux Sportifs</span><br>
+          <span class="gradient-text-alt">Mondiaux</span>
+        </h1>
+        <p class="hero-subtitle">
+          La plus grande banque de jeux sportifs pour l'éducation physique au Québec.<br>
+          Jeux traditionnels, sports collectifs, activités autochtones et bien plus.
+        </p>
+        <div class="hero-counters">
+          <div class="counter-card">
+            <span class="counter-num" data-count="0" id="counter-jeux">0</span>
+            <span class="counter-label">Jeux recensés</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-num">16</span>
+            <span class="counter-label">Catégories</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-num">5</span>
+            <span class="counter-label">Niveaux scolaires</span>
+          </div>
+          <div class="counter-card">
+            <span class="counter-num">50+</span>
+            <span class="counter-label">Pays représentés</span>
+          </div>
+        </div>
+        <div class="hero-sports-icons">
+          <span>⚽</span><span>🏀</span><span>🏐</span><span>🏈</span><span>🎾</span>
+          <span>🏸</span><span>🥊</span><span>🤸</span><span>🏊</span><span>🎯</span>
+          <span>🪃</span><span>🏹</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barre de filtres -->
+    <section class="controls-section">
+      <div class="controls-inner">
+        <div class="controls-row">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="search"
+              class="search-input"
+              placeholder="Rechercher un jeu, une origine, un mot-clé..."
+              autocomplete="off"
+            >
+          </div>
+
+          <select id="cat" class="filter-select">
+            <option value="">🎮 Toutes les catégories</option>
+            <option value="ballon_chasseur">🎯 Ballon Chasseur</option>
+            <option value="poursuite">🏃 Poursuite</option>
+            <option value="cooperation">🤝 Coopération</option>
+            <option value="opposition">⚔️ Opposition</option>
+            <option value="sports_collectifs">🏅 Sports Collectifs</option>
+            <option value="sans_materiel">🙌 Sans Matériel</option>
+            <option value="exterieur">🌿 Extérieur</option>
+            <option value="traditionnels_monde">🌍 Traditionnels du monde</option>
+            <option value="sports_individuels">🏋️ Sports Individuels</option>
+            <option value="jeux_autochtones">🪶 Autochtones</option>
+            <option value="jeux_avec_materiel">🏸 Avec Matériel</option>
+            <option value="jeux_olympiques_paralympiques">🥇 Olympiques / Paralympiques</option>
+            <option value="jeux_afrique_asie_oceanie">🌏 Afrique · Asie · Océanie</option>
+            <option value="jeux_ameriques_europe">🌎 Amériques · Europe</option>
+            <option value="jeux_prescolaire">🌱 Préscolaire</option>
+            <option value="jeux_secondaire">🎓 Secondaire</option>
+          </select>
+
+          <select id="niveau" class="filter-select">
+            <option value="">📚 Tous les niveaux</option>
+            <option value="prescolaire">🌱 Préscolaire</option>
+            <option value="primaire">📖 Primaire</option>
+            <option value="secondaire">🎓 Secondaire</option>
+          </select>
+
+          <select id="espace" class="filter-select">
+            <option value="">📍 Tout espace</option>
+            <option value="Gymnase">🏟️ Gymnase</option>
+            <option value="Extérieur">🌿 Extérieur</option>
+            <option value="Les deux">🔄 Les deux</option>
+          </select>
+
+          <select id="intensite" class="filter-select">
+            <option value="">⚡ Toute intensité</option>
+            <option value="Élevé">🔥 Élevée</option>
+            <option value="Modéré">🟡 Modérée</option>
+            <option value="Faible">🟢 Faible</option>
+          </select>
+        </div>
+
+        <div class="controls-actions">
+          <button class="btn-reset" onclick="resetFilters()">↺ Réinitialiser</button>
+          <div class="results-quick">
+            <span id="quick-count">— jeux</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stats-bar-inner">
+        <span class="stat-pill stat-pill-primary" id="stat-count">0 jeux</span>
+        <span class="stat-pill stat-pill-secondary" id="stat-origines">0 origines</span>
+        <span class="stat-pill stat-pill-accent" id="stat-categories">0 catégories</span>
+        <span class="stat-pill stat-pill-muted">Base mondiale ÉPS Québec</span>
+      </div>
+    </div>
+
+    <!-- Grille de jeux -->
+    <main class="main-content">
+      <div id="jeux-grid" class="jeux-grid">
+        <!-- Les cartes sont générées dynamiquement par app.js -->
+        <div class="grid-loading">
+          <div class="grid-spinner"></div>
+          <p>Chargement des jeux...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-logo">⚡ Zone Total Sport</div>
+        <p class="footer-text">Banque de jeux sportifs mondiaux pour l'éducation physique au Québec</p>
+        <div class="footer-links">
+          <a href="#">PFEQ</a>
+          <a href="#">SAÉ</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /app -->
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div id="modal-body" class="modal-body">
+        <!-- Contenu généré dynamiquement -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

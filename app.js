@@ -1,0 +1,619 @@
+// ============================================================
+// APP JEUX SPORTIFS MONDIAUX — Zone Total Sport
+// ============================================================
+
+const JEUX_SOURCES = [
+  { key: 'ballon_chasseur', path: 'data/jeux/ballon_chasseur.json', label: '🎯 Ballon Chasseur', emoji: '🎯' },
+  { key: 'poursuite', path: 'data/jeux/poursuite.json', label: '🏃 Poursuite', emoji: '🏃' },
+  { key: 'cooperation', path: 'data/jeux/cooperation.json', label: '🤝 Coopération', emoji: '🤝' },
+  { key: 'opposition', path: 'data/jeux/opposition.json', label: '⚔️ Opposition', emoji: '⚔️' },
+  { key: 'sports_collectifs', path: 'data/jeux/sports_collectifs.json', label: '🏅 Sports Collectifs', emoji: '🏅' },
+  { key: 'sans_materiel', path: 'data/jeux/sans_materiel.json', label: '🙌 Sans Matériel', emoji: '🙌' },
+  { key: 'exterieur', path: 'data/jeux/exterieur.json', label: '🌿 Extérieur', emoji: '🌿' },
+  { key: 'traditionnels_monde', path: 'data/jeux/traditionnels_monde.json', label: '🌍 Traditionnels', emoji: '🌍' },
+  { key: 'sports_individuels', path: 'data/jeux/sports_individuels.json', label: '🏋️ Sports Individuels', emoji: '🏋️' },
+  { key: 'jeux_autochtones', path: 'data/jeux/jeux_autochtones.json', label: '🪶 Autochtones', emoji: '🪶' },
+  { key: 'jeux_avec_materiel', path: 'data/jeux/jeux_avec_materiel.json', label: '🏸 Avec Matériel', emoji: '🏸' },
+  { key: 'jeux_olympiques_paralympiques', path: 'data/jeux/jeux_olympiques_paralympiques.json', label: '🥇 Olympiques', emoji: '🥇' },
+  { key: 'jeux_afrique_asie_oceanie', path: 'data/jeux/jeux_afrique_asie_oceanie.json', label: '🌏 Afrique·Asie', emoji: '🌏' },
+  { key: 'jeux_ameriques_europe', path: 'data/jeux/jeux_ameriques_europe.json', label: '🌎 Amériques·Europe', emoji: '🌎' },
+  { key: 'jeux_prescolaire', path: 'data/jeux/jeux_prescolaire.json', label: '🌱 Préscolaire', emoji: '🌱' },
+  { key: 'jeux_secondaire', path: 'data/jeux/jeux_secondaire.json', label: '🎓 Secondaire', emoji: '🎓' },
+];
+
+let allJeux = [];
+let filtered = [];
+let intersectionObserver = null;
+
+// Safety timeout — masque le loading après 8s même si fetch échoue
+const safetyTimer = setTimeout(() => {
+  console.warn('Safety timeout triggered');
+  hideLoading();
+}, 8000);
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  initCanvas();
+  simulateLoadingProgress();
+  await loadAllJeux();
+  setupFilters();
+  renderJeux();
+  hideLoading();
+  animateCounters();
+});
+
+// ============================================================
+// LOADING
+// ============================================================
+function simulateLoadingProgress() {
+  const bar = document.getElementById('loading-bar');
+  const text = document.getElementById('loading-text');
+  const messages = [
+    'Chargement des jeux du monde...',
+    'Import des jeux autochtones...',
+    'Chargement sports collectifs...',
+    'Préparation de l\'interface...',
+    'Presque prêt...'
+  ];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < messages.length) {
+      if (text) text.textContent = messages[i];
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 600);
+}
+
+function hideLoading() {
+  clearTimeout(safetyTimer);
+  const loading = document.getElementById('loading');
+  const app = document.getElementById('app');
+  if (loading) {
+    loading.style.transition = 'opacity 0.4s ease';
+    loading.style.opacity = '0';
+    setTimeout(() => {
+      if (loading) loading.style.display = 'none';
+      if (app) app.classList.remove('hidden');
+    }, 400);
+  } else {
+    if (app) app.classList.remove('hidden');
+  }
+}
+
+// ============================================================
+// CHARGEMENT DES DONNÉES
+// ============================================================
+async function loadAllJeux() {
+  const results = await Promise.allSettled(
+    JEUX_SOURCES.map(source =>
+      fetch(source.path)
+        .then(r => {
+          if (!r.ok) {
+            console.error(`404: ${source.path}`);
+            throw new Error(`HTTP ${r.status}: ${source.path}`);
+          }
+          return r.json();
+        })
+        .then(data => ({ source, data }))
+    )
+  );
+
+  let loaded = 0;
+  results.forEach(result => {
+    if (result.status === 'fulfilled') {
+      const { source, data } = result.value;
+      let jeux = Array.isArray(data) ? data : (data.jeux || data.items || []);
+      jeux = jeux.map(j => ({
+        ...j,
+        _source: source.key,
+        _emoji: source.emoji,
+        _label: source.label
+      }));
+      allJeux.push(...jeux);
+      loaded++;
+    } else {
+      console.error('Erreur chargement:', result.reason?.message || result.reason);
+    }
+  });
+
+  console.log(`Chargé: ${loaded}/${JEUX_SOURCES.length} fichiers — ${allJeux.length} jeux au total`);
+  filtered = [...allJeux];
+
+  // Mettre à jour le compteur hero avec le vrai total
+  const counterJeux = document.getElementById('counter-jeux');
+  if (counterJeux) counterJeux.dataset.count = allJeux.length;
+}
+
+// ============================================================
+// FILTRES
+// ============================================================
+function setupFilters() {
+  ['search', 'cat', 'niveau', 'espace', 'intensite'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const eventType = el.tagName === 'INPUT' ? 'input' : 'change';
+      el.addEventListener(eventType, applyFilters);
+    }
+  });
+}
+
+function applyFilters() {
+  const search = document.getElementById('search')?.value.toLowerCase().trim() || '';
+  const cat = document.getElementById('cat')?.value || '';
+  const niveau = document.getElementById('niveau')?.value || '';
+  const espace = document.getElementById('espace')?.value || '';
+  const intensite = document.getElementById('intensite')?.value || '';
+
+  filtered = allJeux.filter(j => {
+    // Recherche texte
+    if (search) {
+      const searchable = [
+        j.titre, j.nom, j.description, j.but_du_jeu, j.resume,
+        j.origine, j.pays, j.culture, j.region
+      ].filter(Boolean).join(' ').toLowerCase();
+      if (!searchable.includes(search)) return false;
+    }
+
+    // Filtre catégorie
+    if (cat && j._source !== cat && j.categorie !== cat) return false;
+
+    // Filtre niveau
+    if (niveau) {
+      const niv = (j.niveau || j.niveaux || '').toString().toLowerCase();
+      if (!niv.includes(niveau.toLowerCase())) return false;
+    }
+
+    // Filtre espace
+    if (espace) {
+      const esp = (j.espace || j.lieu || '').toString();
+      if (esp && !esp.includes(espace)) return false;
+    }
+
+    // Filtre intensité
+    if (intensite) {
+      const inten = (j.intensite || j.niveau_activite || j.intensite_activite || '').toString();
+      if (!inten.includes(intensite)) return false;
+    }
+
+    return true;
+  });
+
+  renderJeux();
+  updateStats();
+}
+
+function resetFilters() {
+  ['search', 'cat', 'niveau', 'espace', 'intensite'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  filtered = [...allJeux];
+  renderJeux();
+  updateStats();
+}
+
+// ============================================================
+// UTILITAIRES AFFICHAGE
+// ============================================================
+function getCategoryEmoji(source) {
+  const map = {
+    ballon_chasseur: '🎯',
+    poursuite: '🏃',
+    cooperation: '🤝',
+    opposition: '⚔️',
+    sports_collectifs: '🏅',
+    sans_materiel: '🙌',
+    exterieur: '🌿',
+    traditionnels_monde: '🌍',
+    sports_individuels: '🏋️',
+    jeux_autochtones: '🪶',
+    jeux_avec_materiel: '🏸',
+    jeux_olympiques_paralympiques: '🥇',
+    jeux_afrique_asie_oceanie: '🌏',
+    jeux_ameriques_europe: '🌎',
+    jeux_prescolaire: '🌱',
+    jeux_secondaire: '🎓'
+  };
+  return map[source] || '🎮';
+}
+
+function getIntensiteClass(intensite) {
+  if (!intensite) return '';
+  const i = intensite.toLowerCase();
+  if (i.includes('élev') || i.includes('elev') || i.includes('haut') || i.includes('high')) {
+    return 'tag-intensite-eleve';
+  }
+  if (i.includes('mod')) return 'tag-intensite-modere';
+  return 'tag-intensite-faible';
+}
+
+function getNiveauClass(niveau) {
+  if (!niveau) return 'tag-niveau';
+  const n = niveau.toLowerCase();
+  if (n.includes('prés') || n.includes('pres') || n.includes('maternel')) return 'badge-prescolaire';
+  if (n.includes('prim')) return 'badge-primaire';
+  if (n.includes('sec')) return 'badge-secondaire';
+  return 'tag-niveau';
+}
+
+function truncate(str, max = 120) {
+  if (!str) return '';
+  return str.length > max ? str.substring(0, max).trim() + '…' : str;
+}
+
+// ============================================================
+// RENDU DES CARTES
+// ============================================================
+function renderCard(jeu) {
+  const titre = jeu.titre || jeu.nom || 'Sans titre';
+  const origine = jeu.origine || jeu.pays || jeu.culture || jeu.region || '';
+  const desc = jeu.description || jeu.but_du_jeu || jeu.resume || '';
+  const niveau = jeu.niveau || jeu.niveaux || '';
+  const intensite = jeu.intensite || jeu.niveau_activite || jeu.intensite_activite || '';
+  const espace = jeu.espace || jeu.lieu || '';
+  const nbJoueurs = jeu.nb_joueurs || jeu.nombre_joueurs || '';
+  const emoji = getCategoryEmoji(jeu._source);
+
+  const div = document.createElement('div');
+  div.className = 'game-card';
+  div.setAttribute('role', 'button');
+  div.setAttribute('tabindex', '0');
+  div.setAttribute('aria-label', `Voir les détails de ${titre}`);
+
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="card-icon" aria-hidden="true">${emoji}</span>
+      <div class="card-header-text">
+        <div class="card-title">${escapeHtml(titre)}</div>
+        ${origine ? `<div class="card-origin">🌍 ${escapeHtml(origine)}</div>` : ''}
+      </div>
+    </div>
+    ${desc ? `<p class="card-desc">${escapeHtml(desc)}</p>` : ''}
+    <div class="card-tags">
+      ${niveau ? `<span class="tag ${getNiveauClass(niveau)}">${escapeHtml(String(niveau))}</span>` : ''}
+      ${intensite ? `<span class="tag ${getIntensiteClass(intensite)}">${escapeHtml(String(intensite))}</span>` : ''}
+      ${espace ? `<span class="tag tag-espace">📍 ${escapeHtml(String(espace))}</span>` : ''}
+    </div>
+    ${nbJoueurs ? `
+    <div class="card-footer">
+      <span class="card-players">👥 ${escapeHtml(String(nbJoueurs))}</span>
+      <span class="card-arrow">Voir plus →</span>
+    </div>` : `
+    <div class="card-footer">
+      <span></span>
+      <span class="card-arrow">Voir plus →</span>
+    </div>`}
+  `;
+
+  div.addEventListener('click', () => openModal(jeu));
+  div.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openModal(jeu);
+    }
+  });
+
+  return div;
+}
+
+function renderJeux() {
+  const grid = document.getElementById('jeux-grid');
+  if (!grid) return;
+
+  // Déconnecter l'observer précédent
+  if (intersectionObserver) {
+    intersectionObserver.disconnect();
+    intersectionObserver = null;
+  }
+
+  grid.innerHTML = '';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        🔍 Aucun jeu trouvé<br>
+        <small>Essaie d'autres filtres ou efface la recherche</small>
+      </div>`;
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  filtered.forEach(jeu => fragment.appendChild(renderCard(jeu)));
+  grid.appendChild(fragment);
+
+  // IntersectionObserver pour animations d'entrée au scroll
+  intersectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // Délai progressif pour les premières cartes visibles
+        const delay = Math.min(i * 40, 300);
+        setTimeout(() => {
+          entry.target.classList.add('animate-in');
+        }, delay);
+        intersectionObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+  grid.querySelectorAll('.game-card').forEach(card => {
+    intersectionObserver.observe(card);
+  });
+
+  updateStats();
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function updateStats() {
+  const count = filtered.length;
+
+  // Stats bar
+  const countEl = document.getElementById('stat-count');
+  if (countEl) countEl.textContent = `${count} jeu${count !== 1 ? 'x' : ''}`;
+
+  const originesEl = document.getElementById('stat-origines');
+  if (originesEl) {
+    const origines = new Set(
+      filtered.map(j => j.origine || j.pays || j.culture || j.region).filter(Boolean)
+    );
+    originesEl.textContent = `${origines.size} origine${origines.size !== 1 ? 's' : ''}`;
+  }
+
+  const catsEl = document.getElementById('stat-categories');
+  if (catsEl) {
+    const cats = new Set(filtered.map(j => j._source).filter(Boolean));
+    catsEl.textContent = `${cats.size} catégorie${cats.size !== 1 ? 's' : ''}`;
+  }
+
+  // Header stat jeux
+  const headerCount = document.getElementById('hstat-jeux');
+  if (headerCount) {
+    headerCount.innerHTML = `<span class="hstat-num">${allJeux.length}</span><span class="hstat-label">JEUX</span>`;
+  }
+
+  // Compteur rapide
+  const quickCount = document.getElementById('quick-count');
+  if (quickCount) quickCount.textContent = `${count} jeu${count !== 1 ? 'x' : ''}`;
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(jeu) {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modal-body');
+  if (!modal || !body) return;
+
+  const titre = jeu.titre || jeu.nom || 'Sans titre';
+  const desc = jeu.description || '';
+  const but = jeu.but_du_jeu || '';
+  const deroulement = toArray(jeu.deroulement || jeu.etapes || []);
+  const variantes = toArray(jeu.variantes || jeu.variations || []);
+  const materiel = toArray(jeu.materiel || jeu.equipement || []);
+  const consignes_securite = toArray(jeu.consignes_securite || jeu.securite || []);
+  const origine = jeu.origine || jeu.pays || jeu.culture || jeu.region || '';
+  const niveau = jeu.niveau || jeu.niveaux || '';
+  const espace = jeu.espace || jeu.lieu || '';
+  const intensite = jeu.intensite || jeu.niveau_activite || jeu.intensite_activite || '';
+  const nbJoueurs = jeu.nb_joueurs || jeu.nombre_joueurs || '';
+  const duree = jeu.duree || jeu.duree_minutes || '';
+  const objectifs = toArray(jeu.objectifs || jeu.competences || []);
+  const emoji = getCategoryEmoji(jeu._source);
+
+  body.innerHTML = `
+    <div class="modal-header">
+      <h2 class="modal-title">${emoji} ${escapeHtml(titre)}</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="modal-meta">
+      ${origine ? `<span class="modal-badge">🌍 ${escapeHtml(origine)}</span>` : ''}
+      ${niveau ? `<span class="modal-badge">${escapeHtml(String(niveau))}</span>` : ''}
+      ${espace ? `<span class="modal-badge">📍 ${escapeHtml(String(espace))}</span>` : ''}
+      ${intensite ? `<span class="modal-badge">⚡ ${escapeHtml(String(intensite))}</span>` : ''}
+      ${nbJoueurs ? `<span class="modal-badge">👥 ${escapeHtml(String(nbJoueurs))}</span>` : ''}
+      ${duree ? `<span class="modal-badge">⏱ ${escapeHtml(String(duree))} min</span>` : ''}
+    </div>
+
+    ${desc ? `
+    <div class="modal-section">
+      <h3>Description</h3>
+      <p>${escapeHtml(desc)}</p>
+    </div>` : ''}
+
+    ${but ? `
+    <div class="modal-section">
+      <h3>🎯 But du jeu</h3>
+      <p>${escapeHtml(but)}</p>
+    </div>` : ''}
+
+    ${objectifs.length ? `
+    <div class="modal-section">
+      <h3>🏆 Objectifs</h3>
+      <ul>${objectifs.map(o => `<li>${escapeHtml(itemToString(o))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${materiel.length ? `
+    <div class="modal-section">
+      <h3>🎒 Matériel</h3>
+      <ul>${materiel.map(m => `<li>${escapeHtml(itemToString(m))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${deroulement.length ? `
+    <div class="modal-section">
+      <h3>📋 Déroulement</h3>
+      <ol>${deroulement.map(d => `<li>${escapeHtml(itemToString(d))}</li>`).join('')}</ol>
+    </div>` : ''}
+
+    ${variantes.length ? `
+    <div class="modal-section">
+      <h3>💡 Variantes</h3>
+      <ul>${variantes.map(v => `<li>${escapeHtml(itemToString(v))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${consignes_securite.length ? `
+    <div class="modal-section">
+      <h3>🛡️ Sécurité</h3>
+      <ul>${consignes_securite.map(s => `<li>${escapeHtml(itemToString(s))}</li>`).join('')}</ul>
+    </div>` : ''}
+  `;
+
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  // Focus trap basique
+  const closeBtn = body.querySelector('.modal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal');
+  if (modal) modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// COMPTEURS ANIMÉS (hero)
+// ============================================================
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count) || 0;
+    if (target === 0) return;
+    let count = 0;
+    const duration = 1200;
+    const step = target / (duration / 16);
+
+    const interval = setInterval(() => {
+      count = Math.min(count + step, target);
+      el.textContent = Math.floor(count).toLocaleString('fr-CA');
+      if (count >= target) {
+        el.textContent = target.toLocaleString('fr-CA');
+        clearInterval(interval);
+      }
+    }, 16);
+  });
+}
+
+// ============================================================
+// CANVAS — PARTICULES
+// ============================================================
+function initCanvas() {
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let animId;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+
+  const particles = Array.from({ length: 80 }, () => createParticle(canvas));
+
+  function createParticle(canvas) {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      alpha: Math.random() * 0.45 + 0.1,
+      pulse: Math.random() * Math.PI * 2
+    };
+  }
+
+  let frame = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+
+    particles.forEach(p => {
+      // Pulsation subtile
+      const pulsedAlpha = p.alpha * (0.7 + 0.3 * Math.sin(frame * 0.02 + p.pulse));
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 212, 255, ${pulsedAlpha})`;
+      ctx.fill();
+
+      // Mouvement
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Wrap autour de l'écran
+      if (p.x < -5) p.x = canvas.width + 5;
+      else if (p.x > canvas.width + 5) p.x = -5;
+      if (p.y < -5) p.y = canvas.height + 5;
+      else if (p.y > canvas.height + 5) p.y = -5;
+    });
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener('resize', () => {
+    resize();
+  });
+
+  // Nettoyage si nécessaire
+  window._stopCanvas = () => {
+    if (animId) cancelAnimationFrame(animId);
+  };
+}
+
+// ============================================================
+// UTILITAIRES
+// ============================================================
+function toArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') return val.split('\n').filter(Boolean);
+  return [val];
+}
+
+function itemToString(item) {
+  if (!item) return '';
+  if (typeof item === 'string') return item;
+  if (typeof item === 'number') return String(item);
+  // Objet avec propriétés communes
+  return item.titre || item.description || item.etape ||
+         item.variante || item.nom || item.texte ||
+         JSON.stringify(item);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ============================================================
+// ÉVÉNEMENTS GLOBAUX
+// ============================================================
+
+// Fermer modal sur clic du backdrop
+document.addEventListener('click', e => {
+  if (e.target.id === 'modal-backdrop') closeModal();
+});
+
+// Fermer modal avec Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Exposer resetFilters globalement pour le bouton HTML
+window.resetFilters = resetFilters;
+window.closeModal = closeModal;
