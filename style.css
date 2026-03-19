@@ -1001,6 +1001,72 @@ ul, ol {
   border: 1px solid rgba(124, 58, 237, 0.25);
 }
 
+/* === PAGINATION === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+  padding: 0 16px;
+}
+
+.page-btn {
+  padding: 8px 16px;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-xs);
+  color: var(--primary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 40px;
+  text-align: center;
+}
+
+.page-btn:hover:not(.active):not(.disabled) {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.page-btn.active {
+  background: var(--primary);
+  color: var(--bg);
+  border-color: var(--primary);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.35);
+  font-weight: 700;
+}
+
+.page-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-dots {
+  color: var(--text-muted);
+  font-size: 1rem;
+  padding: 0 4px;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    gap: 6px;
+    margin-top: 24px;
+  }
+
+  .page-btn {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    min-width: 34px;
+  }
+}
+
 /* === FOOTER === */
 .site-footer {
   background: var(--bg2);

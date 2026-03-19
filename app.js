@@ -24,6 +24,8 @@ const JEUX_SOURCES = [
 let allJeux = [];
 let filtered = [];
 let intersectionObserver = null;
+let currentPage = 0;
+const ITEMS_PER_PAGE = 30;
 
 // Safety timeout — masque le loading après 8s même si fetch échoue
 const safetyTimer = setTimeout(() => {
@@ -131,12 +133,25 @@ async function loadAllJeux() {
 // ============================================================
 // FILTRES
 // ============================================================
+// Debounce utility
+function debounce(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
 function setupFilters() {
+  const debouncedApply = debounce(applyFilters, 250);
   ['search', 'cat', 'niveau', 'espace', 'intensite'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      const eventType = el.tagName === 'INPUT' ? 'input' : 'change';
-      el.addEventListener(eventType, applyFilters);
+      if (el.tagName === 'INPUT') {
+        el.addEventListener('input', debouncedApply);
+      } else {
+        el.addEventListener('change', applyFilters);
+      }
     }
   });
 }
@@ -182,7 +197,9 @@ function applyFilters() {
     return true;
   });
 
+  currentPage = 0;
   renderJeux();
+  renderPagination();
   updateStats();
 }
 
@@ -192,7 +209,9 @@ function resetFilters() {
     if (el) el.value = '';
   });
   filtered = [...allJeux];
+  currentPage = 0;
   renderJeux();
+  renderPagination();
   updateStats();
 }
 
@@ -318,11 +337,17 @@ function renderJeux() {
         🔍 Aucun jeu trouvé<br>
         <small>Essaie d'autres filtres ou efface la recherche</small>
       </div>`;
+    renderPagination();
     return;
   }
 
+  // Pagination : slice du tableau filtré
+  const start = currentPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  const pageItems = filtered.slice(start, end);
+
   const fragment = document.createDocumentFragment();
-  filtered.forEach(jeu => fragment.appendChild(renderCard(jeu)));
+  pageItems.forEach(jeu => fragment.appendChild(renderCard(jeu)));
   grid.appendChild(fragment);
 
   // IntersectionObserver pour animations d'entrée au scroll
@@ -343,7 +368,108 @@ function renderJeux() {
     intersectionObserver.observe(card);
   });
 
+  renderPagination();
   updateStats();
+}
+
+// ============================================================
+// PAGINATION
+// ============================================================
+function getTotalPages() {
+  return Math.ceil(filtered.length / ITEMS_PER_PAGE);
+}
+
+function goToPage(page) {
+  const totalPages = getTotalPages();
+  if (page < 0 || page >= totalPages) return;
+  currentPage = page;
+  renderJeux();
+
+  // Scroll vers le haut de la grille
+  const grid = document.getElementById('jeux-grid');
+  if (grid) {
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function renderPagination() {
+  const container = document.getElementById('pagination');
+  if (!container) return;
+
+  const totalPages = getTotalPages();
+  container.innerHTML = '';
+
+  if (totalPages <= 1) return;
+
+  // Bouton Précédent
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'page-btn' + (currentPage === 0 ? ' disabled' : '');
+  prevBtn.textContent = '← Précédent';
+  prevBtn.disabled = currentPage === 0;
+  prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+  container.appendChild(prevBtn);
+
+  // Calcul des pages à afficher (max 7 numéros visibles)
+  const maxVisible = 7;
+  let startPage = 0;
+  let endPage = totalPages - 1;
+
+  if (totalPages > maxVisible) {
+    const half = Math.floor(maxVisible / 2);
+    startPage = Math.max(0, currentPage - half);
+    endPage = startPage + maxVisible - 1;
+    if (endPage >= totalPages) {
+      endPage = totalPages - 1;
+      startPage = endPage - maxVisible + 1;
+    }
+  }
+
+  // Premier numéro + ellipsis si nécessaire
+  if (startPage > 0) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn';
+    btn.textContent = '1';
+    btn.addEventListener('click', () => goToPage(0));
+    container.appendChild(btn);
+    if (startPage > 1) {
+      const dots = document.createElement('span');
+      dots.className = 'page-dots';
+      dots.textContent = '…';
+      container.appendChild(dots);
+    }
+  }
+
+  // Numéros de page
+  for (let i = startPage; i <= endPage; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+    btn.textContent = i + 1;
+    btn.addEventListener('click', () => goToPage(i));
+    container.appendChild(btn);
+  }
+
+  // Dernier numéro + ellipsis si nécessaire
+  if (endPage < totalPages - 1) {
+    if (endPage < totalPages - 2) {
+      const dots = document.createElement('span');
+      dots.className = 'page-dots';
+      dots.textContent = '…';
+      container.appendChild(dots);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'page-btn';
+    btn.textContent = totalPages;
+    btn.addEventListener('click', () => goToPage(totalPages - 1));
+    container.appendChild(btn);
+  }
+
+  // Bouton Suivant
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'page-btn' + (currentPage >= totalPages - 1 ? ' disabled' : '');
+  nextBtn.textContent = 'Suivant →';
+  nextBtn.disabled = currentPage >= totalPages - 1;
+  nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+  container.appendChild(nextBtn);
 }
 
 // ============================================================
