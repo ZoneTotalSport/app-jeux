@@ -518,7 +518,7 @@ function openModal(jeu) {
   const titre = jeu.titre || jeu.nom || 'Sans titre';
   const desc = jeu.description || '';
   const but = jeu.but_du_jeu || '';
-  const deroulement = toArray(jeu.deroulement || jeu.etapes || []);
+  const deroulement = toArray(jeu.deroulement || jeu.regles || jeu.etapes || []);
   const variantes = toArray(jeu.variantes || jeu.variations || []);
   const materiel = toArray(jeu.materiel || jeu.equipement || []);
   const consignes_securite = toArray(jeu.consignes_securite || jeu.securite || []);
