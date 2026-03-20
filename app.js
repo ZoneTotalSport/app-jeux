@@ -26,6 +26,61 @@ let filtered = [];
 let intersectionObserver = null;
 let currentPage = 0;
 const ITEMS_PER_PAGE = 30;
+let favorisFilter = false;
+
+// ============================================================
+// FAVORIS (localStorage)
+// ============================================================
+function getFavoris() {
+  try {
+    return JSON.parse(localStorage.getItem('favoris-jeux')) || [];
+  } catch { return []; }
+}
+
+function setFavoris(arr) {
+  localStorage.setItem('favoris-jeux', JSON.stringify(arr));
+}
+
+function getJeuId(jeu) {
+  return jeu.id || jeu.titre || jeu.nom || '';
+}
+
+function isFavori(jeu) {
+  return getFavoris().includes(getJeuId(jeu));
+}
+
+function toggleFavori(jeu) {
+  const id = getJeuId(jeu);
+  let favs = getFavoris();
+  if (favs.includes(id)) {
+    favs = favs.filter(f => f !== id);
+  } else {
+    favs.push(id);
+  }
+  setFavoris(favs);
+  return favs.includes(id);
+}
+
+// ============================================================
+// TOAST NOTIFICATION
+// ============================================================
+function showToast(message, duration = 2000) {
+  let toast = document.getElementById('toast-notification');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-notification';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.remove('toast-hide');
+  toast.classList.add('toast-show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('toast-show');
+    toast.classList.add('toast-hide');
+  }, duration);
+}
 
 // Safety timeout — masque le loading après 8s même si fetch échoue
 const safetyTimer = setTimeout(() => {
@@ -44,6 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderJeux();
   hideLoading();
   animateCounters();
+  checkDeepLink();
 });
 
 // ============================================================
@@ -164,6 +220,9 @@ function applyFilters() {
   const intensite = document.getElementById('intensite')?.value || '';
 
   filtered = allJeux.filter(j => {
+    // Filtre favoris
+    if (favorisFilter && !isFavori(j)) return false;
+
     // Recherche texte
     if (search) {
       const searchable = [
@@ -208,6 +267,9 @@ function resetFilters() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  favorisFilter = false;
+  const favFilterBtn = document.getElementById('btn-favoris-filter');
+  if (favFilterBtn) favFilterBtn.classList.remove('active');
   filtered = [...allJeux];
   currentPage = 0;
   renderJeux();
@@ -283,7 +345,10 @@ function renderCard(jeu) {
   div.setAttribute('tabindex', '0');
   div.setAttribute('aria-label', `Voir les détails de ${titre}`);
 
+  const favored = isFavori(jeu);
+
   div.innerHTML = `
+    <button class="card-fav-btn" aria-label="Favori" title="Ajouter aux favoris">${favored ? '★' : '☆'}</button>
     <div class="card-header">
       <span class="card-icon" aria-hidden="true">${emoji}</span>
       <div class="card-header-text">
@@ -307,6 +372,18 @@ function renderCard(jeu) {
       <span class="card-arrow">Voir plus →</span>
     </div>`}
   `;
+
+  // Favori button
+  const favBtn = div.querySelector('.card-fav-btn');
+  favBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nowFav = toggleFavori(jeu);
+    favBtn.textContent = nowFav ? '★' : '☆';
+    // If showing only favoris and we just unfavorited, re-render
+    if (favorisFilter && !nowFav) {
+      applyFilters();
+    }
+  });
 
   div.addEventListener('click', () => openModal(jeu));
   div.addEventListener('keydown', e => {
@@ -531,10 +608,17 @@ function openModal(jeu) {
   const objectifs = toArray(jeu.objectifs || jeu.competences || []);
   const emoji = getCategoryEmoji(jeu._source);
 
+  const modalFav = isFavori(jeu);
+
   body.innerHTML = `
     <div class="modal-header">
       <h2 class="modal-title">${emoji} ${escapeHtml(titre)}</h2>
-      <button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button>
+      <div class="modal-header-actions">
+        <button class="modal-action-btn modal-fav-btn" id="modal-fav-btn" aria-label="Favori" title="Favori">${modalFav ? '★' : '☆'}</button>
+        <button class="modal-action-btn" id="modal-print-btn" aria-label="Imprimer" title="Imprimer">🖨️</button>
+        <button class="modal-action-btn" id="modal-share-btn" aria-label="Partager" title="Partager">🔗</button>
+        <button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button>
+      </div>
     </div>
 
     <div class="modal-meta">
@@ -592,9 +676,57 @@ function openModal(jeu) {
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 
+  // Modal favori button
+  const modalFavBtn = document.getElementById('modal-fav-btn');
+  if (modalFavBtn) {
+    modalFavBtn.addEventListener('click', () => {
+      const nowFav = toggleFavori(jeu);
+      modalFavBtn.textContent = nowFav ? '★' : '☆';
+      // Update the card star if visible
+      updateCardFavStar(jeu, nowFav);
+    });
+  }
+
+  // Modal print button
+  const printBtn = document.getElementById('modal-print-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  // Modal share button
+  const shareBtn = document.getElementById('modal-share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      const id = encodeURIComponent(getJeuId(jeu));
+      const url = `https://jeux.zonetotalsport.ca/?id=${id}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Lien copié !');
+      }).catch(() => {
+        showToast('Lien copié !');
+      });
+    });
+  }
+
   // Focus trap basique
   const closeBtn = body.querySelector('.modal-close');
   if (closeBtn) closeBtn.focus();
+}
+
+// Update card fav star after toggling in modal
+function updateCardFavStar(jeu, isFav) {
+  const grid = document.getElementById('jeux-grid');
+  if (!grid) return;
+  const cards = grid.querySelectorAll('.game-card');
+  const jeuId = getJeuId(jeu);
+  cards.forEach(card => {
+    const titleEl = card.querySelector('.card-title');
+    if (titleEl && (titleEl.textContent === (jeu.titre || jeu.nom || 'Sans titre'))) {
+      const btn = card.querySelector('.card-fav-btn');
+      if (btn) btn.textContent = isFav ? '★' : '☆';
+    }
+  });
 }
 
 function closeModal() {
@@ -725,6 +857,30 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+// ============================================================
+// DEEP LINK (partage)
+// ============================================================
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) return;
+  const jeu = allJeux.find(j => getJeuId(j) === id);
+  if (jeu) {
+    setTimeout(() => openModal(jeu), 500);
+  }
+}
+
+// ============================================================
+// FILTRE FAVORIS (bouton toggle)
+// ============================================================
+function toggleFavorisFilter() {
+  favorisFilter = !favorisFilter;
+  const btn = document.getElementById('btn-favoris-filter');
+  if (btn) btn.classList.toggle('active', favorisFilter);
+  applyFilters();
+}
+window.toggleFavorisFilter = toggleFavorisFilter;
 
 // ============================================================
 // ÉVÉNEMENTS GLOBAUX
