@@ -188,6 +188,16 @@ img {
   letter-spacing: 0.05em;
 }
 
+/* === BACKGROUND — GYMNASE === */
+#gymBg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: url('gym-bg.png') center/cover no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 /* === HIDDEN === */
 .hidden {
   display: none !important;
