@@ -267,14 +267,16 @@
       INSCRIPTION GRATUITE
     </button>
 
-    <p class="sub-text">Deja membre? Connecte-toi depuis le site.</p>
+    <p class="sub-text">Deja membre? <a href="#" onclick="triggerLogin();return false;" style="color:#00E5FF;text-decoration:underline;cursor:pointer;">Connecte-toi ici</a></p>
 
   </div>
 
   <script>
     function triggerSignup() {
-      // Envoie le message au parent (Wix) pour ouvrir le signup
       window.parent.postMessage('triggerSignup', '*');
+    }
+    function triggerLogin() {
+      window.parent.postMessage('triggerLogin', '*');
     }
   </script>
 
