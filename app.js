@@ -29,6 +29,27 @@ const ITEMS_PER_PAGE = 30;
 let favorisFilter = false;
 
 // ============================================================
+// LOCALISATION HELPER — supporte string simple ou {fr,en,es,zh}
+// ============================================================
+function loc(val) {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'object' && !Array.isArray(val)) {
+    return val[_currentLang] || val['fr'] || val['en'] || Object.values(val)[0] || '';
+  }
+  return String(val);
+}
+function locArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'object') {
+    const arr = val[_currentLang] || val['fr'] || val['en'];
+    return Array.isArray(arr) ? arr : (arr ? [arr] : []);
+  }
+  return [String(val)];
+}
+
+// ============================================================
 // FAVORIS (localStorage)
 // ============================================================
 function getFavoris() {
@@ -42,7 +63,7 @@ function setFavoris(arr) {
 }
 
 function getJeuId(jeu) {
-  return jeu.id || jeu.titre || jeu.nom || '';
+  return jeu.id || loc(jeu.titre) || loc(jeu.nom) || '';
 }
 
 function isFavori(jeu) {
@@ -226,8 +247,10 @@ function applyFilters() {
     // Recherche texte
     if (search) {
       const searchable = [
-        j.titre, j.nom, j.description, j.but_du_jeu, j.resume,
-        j.origine, j.pays, j.culture, j.region
+        loc(j.titre), loc(j.nom), loc(j.description), loc(j.but_du_jeu), loc(j.resume),
+        loc(j.origine), loc(j.pays), loc(j.culture), loc(j.region),
+        ...(Array.isArray(j.tags) ? j.tags.map(t => loc(t)) : []),
+        ...(Array.isArray(j.noms_alternatifs) ? j.noms_alternatifs.map(n => loc(n)) : [])
       ].filter(Boolean).join(' ').toLowerCase();
       if (!searchable.includes(search)) return false;
     }
@@ -237,19 +260,19 @@ function applyFilters() {
 
     // Filtre niveau
     if (niveau) {
-      const niv = (j.niveau || j.niveaux || '').toString().toLowerCase();
+      const niv = loc(j.niveau || j.niveaux).toLowerCase();
       if (!niv.includes(niveau.toLowerCase())) return false;
     }
 
     // Filtre espace
     if (espace) {
-      const esp = (j.espace || j.lieu || '').toString();
+      const esp = loc(j.espace || j.lieu);
       if (esp && !esp.includes(espace)) return false;
     }
 
     // Filtre intensité
     if (intensite) {
-      const inten = (j.intensite || j.niveau_activite || j.intensite_activite || '').toString();
+      const inten = loc(j.intensite || j.niveau_activite || j.intensite_activite);
       if (!inten.includes(intensite)) return false;
     }
 
@@ -330,13 +353,13 @@ function truncate(str, max = 120) {
 // RENDU DES CARTES
 // ============================================================
 function renderCard(jeu) {
-  const titre = jeu.titre || jeu.nom || 'Sans titre';
-  const origine = jeu.origine || jeu.pays || jeu.culture || jeu.region || '';
-  const desc = jeu.description || jeu.but_du_jeu || jeu.resume || '';
-  const niveau = jeu.niveau || jeu.niveaux || '';
-  const intensite = jeu.intensite || jeu.niveau_activite || jeu.intensite_activite || '';
-  const espace = jeu.espace || jeu.lieu || '';
-  const nbJoueurs = jeu.nb_joueurs || jeu.nombre_joueurs || '';
+  const titre = loc(jeu.titre || jeu.nom) || 'Sans titre';
+  const origine = loc(jeu.origine || jeu.pays || jeu.culture || jeu.region) || '';
+  const desc = loc(jeu.description || jeu.but_du_jeu || jeu.resume) || '';
+  const niveau = loc(jeu.niveau || jeu.niveaux) || '';
+  const intensite = loc(jeu.intensite || jeu.niveau_activite || jeu.intensite_activite) || '';
+  const espace = loc(jeu.espace || jeu.lieu) || '';
+  const nbJoueurs = loc(jeu.nb_joueurs || jeu.nombre_joueurs) || '';
   const emoji = getCategoryEmoji(jeu._source);
 
   const div = document.createElement('div');
@@ -356,6 +379,7 @@ function renderCard(jeu) {
         ${origine ? `<div class="card-origin">🌍 ${escapeHtml(origine)}</div>` : ''}
       </div>
     </div>
+    ${jeu.image ? `<div class="card-img"><img src="${jeu.image}" alt="Disposition - ${escapeHtml(titre)}" loading="lazy"></div>` : ''}
     ${desc ? `<p class="card-desc">${escapeHtml(desc)}</p>` : ''}
     <div class="card-tags">
       ${niveau ? `<span class="tag ${getNiveauClass(niveau)}">${escapeHtml(String(niveau))}</span>` : ''}
@@ -592,20 +616,26 @@ function openModal(jeu) {
   const body = document.getElementById('modal-body');
   if (!modal || !body) return;
 
-  const titre = jeu.titre || jeu.nom || 'Sans titre';
-  const desc = jeu.description || '';
-  const but = jeu.but_du_jeu || '';
-  const deroulement = toArray(jeu.deroulement || jeu.regles || jeu.etapes || []);
-  const variantes = toArray(jeu.variantes || jeu.variations || []);
-  const materiel = toArray(jeu.materiel || jeu.equipement || []);
-  const consignes_securite = toArray(jeu.consignes_securite || jeu.securite || []);
-  const origine = jeu.origine || jeu.pays || jeu.culture || jeu.region || '';
-  const niveau = jeu.niveau || jeu.niveaux || '';
-  const espace = jeu.espace || jeu.lieu || '';
-  const intensite = jeu.intensite || jeu.niveau_activite || jeu.intensite_activite || '';
-  const nbJoueurs = jeu.nb_joueurs || jeu.nombre_joueurs || '';
-  const duree = jeu.duree || jeu.duree_minutes || '';
-  const objectifs = toArray(jeu.objectifs || jeu.competences || []);
+  const titre = loc(jeu.titre || jeu.nom) || 'Sans titre';
+  const desc = loc(jeu.description) || '';
+  const but = loc(jeu.but_du_jeu) || '';
+  const deroulement = locArray(jeu.deroulement || jeu.regles || jeu.etapes);
+  const variantes = locArray(jeu.variantes || jeu.variations);
+  const materiel = locArray(jeu.materiel || jeu.equipement);
+  const consignes_securite = locArray(jeu.consignes_securite || jeu.securite);
+  const origine = loc(jeu.origine || jeu.pays || jeu.culture || jeu.region) || '';
+  const niveau = loc(jeu.niveau || jeu.niveaux) || '';
+  const espace = loc(jeu.espace || jeu.lieu) || '';
+  const intensite = loc(jeu.intensite || jeu.niveau_activite || jeu.intensite_activite) || '';
+  const nbJoueurs = loc(jeu.nb_joueurs || jeu.nombre_joueurs) || '';
+  const duree = loc(jeu.duree || jeu.duree_minutes) || '';
+  const objectifs = locArray(jeu.objectifs || jeu.competences);
+  const disposition = loc(jeu.disposition) || '';
+  const adaptations = loc(jeu.adaptations_besoins_speciaux) || '';
+  const intentions = loc(jeu.intentions_pedagogiques) || '';
+  const nomsAlt = locArray(jeu.noms_alternatifs);
+  const compMotrices = locArray(jeu.competences_motrices);
+  const valeurs = locArray(jeu.valeurs);
   const emoji = getCategoryEmoji(jeu._source);
 
   const modalFav = isFavori(jeu);
@@ -630,46 +660,87 @@ function openModal(jeu) {
       ${duree ? `<span class="modal-badge">⏱ ${escapeHtml(String(duree))} min</span>` : ''}
     </div>
 
+    ${jeu.image ? `
+    <div class="modal-section modal-img-section">
+      <img src="${jeu.image}" alt="Disposition - ${escapeHtml(titre)}" class="modal-img">
+    </div>` : ''}
+
+    ${nomsAlt.length ? `
+    <div class="modal-section">
+      <h3>🏷️ ${t('noms_alt', 'Aussi connu sous')}</h3>
+      <p>${nomsAlt.map(n => escapeHtml(loc(n))).join(' · ')}</p>
+    </div>` : ''}
+
+    ${intentions ? `
+    <div class="modal-section">
+      <h3>🎓 ${t('intentions', 'Intentions pédagogiques')}</h3>
+      <p>${escapeHtml(intentions)}</p>
+    </div>` : ''}
+
     ${desc ? `
     <div class="modal-section">
-      <h3>Description</h3>
+      <h3>📝 Description</h3>
       <p>${escapeHtml(desc)}</p>
     </div>` : ''}
 
     ${but ? `
     <div class="modal-section">
-      <h3>🎯 But du jeu</h3>
+      <h3>🎯 ${t('but', 'But du jeu')}</h3>
       <p>${escapeHtml(but)}</p>
     </div>` : ''}
 
     ${objectifs.length ? `
     <div class="modal-section">
-      <h3>🏆 Objectifs</h3>
-      <ul>${objectifs.map(o => `<li>${escapeHtml(itemToString(o))}</li>`).join('')}</ul>
+      <h3>🏆 ${t('objectifs', 'Objectifs')}</h3>
+      <ul>${objectifs.map(o => `<li>${escapeHtml(itemToString(loc(o)))}</li>`).join('')}</ul>
     </div>` : ''}
 
     ${materiel.length ? `
     <div class="modal-section">
-      <h3>🎒 Matériel</h3>
-      <ul>${materiel.map(m => `<li>${escapeHtml(itemToString(m))}</li>`).join('')}</ul>
+      <h3>🎒 ${t('materiel', 'Matériel')}</h3>
+      <ul>${materiel.map(m => `<li>${escapeHtml(itemToString(loc(m)))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${disposition ? `
+    <div class="modal-section">
+      <h3>📐 ${t('disposition', 'Disposition')}</h3>
+      <p>${escapeHtml(disposition)}</p>
     </div>` : ''}
 
     ${deroulement.length ? `
     <div class="modal-section">
-      <h3>📋 Déroulement</h3>
-      <ol>${deroulement.map(d => `<li>${escapeHtml(itemToString(d))}</li>`).join('')}</ol>
+      <h3>📋 ${t('deroulement', 'Déroulement')}</h3>
+      <ol>${deroulement.map(d => `<li>${escapeHtml(itemToString(loc(d)))}</li>`).join('')}</ol>
     </div>` : ''}
 
     ${variantes.length ? `
     <div class="modal-section">
-      <h3>💡 Variantes</h3>
-      <ul>${variantes.map(v => `<li>${escapeHtml(itemToString(v))}</li>`).join('')}</ul>
+      <h3>💡 ${t('variantes', 'Variantes')}</h3>
+      <ul>${variantes.map(v => `<li>${escapeHtml(itemToString(loc(v)))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${adaptations ? `
+    <div class="modal-section">
+      <h3>♿ ${t('adaptations', 'Adaptations')}</h3>
+      <p>${escapeHtml(adaptations)}</p>
+    </div>` : ''}
+
+    ${compMotrices.length ? `
+    <div class="modal-section">
+      <h3>🏃 ${t('competences', 'Compétences motrices')}</h3>
+      <ul>${compMotrices.map(c => `<li>${escapeHtml(loc(c))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${valeurs.length ? `
+    <div class="modal-section">
+      <h3>💎 ${t('valeurs', 'Valeurs')}</h3>
+      <ul>${valeurs.map(v => `<li>${escapeHtml(loc(v))}</li>`).join('')}</ul>
     </div>` : ''}
 
     ${consignes_securite.length ? `
     <div class="modal-section">
-      <h3>🛡️ Sécurité</h3>
-      <ul>${consignes_securite.map(s => `<li>${escapeHtml(itemToString(s))}</li>`).join('')}</ul>
+      <h3>🛡️ ${t('securite', 'Sécurité')}</h3>
+      <ul>${consignes_securite.map(s => `<li>${escapeHtml(itemToString(loc(s)))}</li>`).join('')}</ul>
     </div>` : ''}
   `;
 
