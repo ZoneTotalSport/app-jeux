@@ -7,16 +7,10 @@
   <meta name="description" content="Banque mondiale de jeux sportifs pour l'éducation physique — Zone Total Sport">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schoolbell&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- Bouton Accueil flottant -->
-<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-<a href="https://zone.zonetotalsport.ca" id="zts-home-btn" style="position:fixed;top:16px;left:16px;z-index:99999;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:linear-gradient(135deg,#00E5FF,#0096C7);color:#fff;font-family:'Luckiest Guy',cursive;font-size:0.9rem;letter-spacing:1px;border-radius:10px;border:2px solid rgba(255,255,255,.3);text-decoration:none;box-shadow:0 3px 12px rgba(0,229,255,.3);transition:all .2s;">&#x1F3E0; Accueil</a>
-
-
-
   <!-- Gym background -->
   <div id="gymBg" aria-hidden="true"></div>
   <!-- Canvas background -->
@@ -25,7 +19,7 @@
   <!-- Loading screen -->
   <div id="loading" class="loading-screen">
     <div class="loading-content">
-      <div class="loading-logo">⚡</div>
+      <div class="loading-logo">🏀</div>
       <div class="loading-title">JEUX SPORTIFS MONDIAUX</div>
       <div class="loading-subtitle">Zone Total Sport</div>
       <div class="loading-spinner"></div>
@@ -42,11 +36,13 @@
     <!-- Header fixe -->
     <header class="site-header">
       <div class="header-inner">
+        <a href="https://zone.zonetotalsport.ca" class="header-home-btn">🏠 Accueil</a>
+
         <div class="header-logo">
-          <span class="logo-icon">⚡</span>
+          <img src="img/bucheron-basketball.png" alt="Bûcheron Basketball" class="logo-mascot">
           <div class="logo-text">
-            <span class="logo-main">ZONE TOTAL SPORT</span>
-            <span class="logo-sub">JEUX SPORTIFS MONDIAUX</span>
+            <span class="logo-main">JEUX SPORTIFS MONDIAUX</span>
+            <span class="logo-sub">ZONE TOTAL SPORT</span>
           </div>
         </div>
 
@@ -66,7 +62,6 @@
         </div>
 
         <nav class="header-nav">
-          <a href="#" class="nav-link active">🎮 Jeux</a>
           <a href="https://sae.zonetotalsport.ca" class="nav-link">📚 SAÉ</a>
           <a href="https://educatifs.zonetotalsport.ca" class="nav-link">🎓 Éducatifs</a>
           <a href="https://musique.zonetotalsport.ca" class="nav-link">🎵 Musique</a>
