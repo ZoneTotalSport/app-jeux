@@ -230,7 +230,7 @@ img {
 .header-home-btn {
   padding: 8px 16px;
   background: linear-gradient(135deg, #0077CC, #005fa3);
-  color: #fff !important;
+  color: #1a1a1a !important;
   font-family: var(--font-title);
   font-size: 0.85rem;
   letter-spacing: 1px;
@@ -246,7 +246,7 @@ img {
 .header-home-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 16px rgba(0, 119, 204, 0.4);
-  color: #fff !important;
+  color: #1a1a1a !important;
 }
 
 .header-logo {
@@ -368,7 +368,7 @@ img {
 }
 
 .nav-link:hover {
-  color: #fff;
+  color: #1a1a1a;
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-1px);
 }
