@@ -19,6 +19,7 @@ const JEUX_SOURCES = [
   { key: 'jeux_ameriques_europe', path: 'data/jeux/jeux_ameriques_europe.json', label: '🌎 Amériques·Europe', emoji: '🌎' },
   { key: 'jeux_prescolaire', path: 'data/jeux/jeux_prescolaire.json', label: '🌱 Préscolaire', emoji: '🌱' },
   { key: 'jeux_secondaire', path: 'data/jeux/jeux_secondaire.json', label: '🎓 Secondaire', emoji: '🎓' },
+  { key: 'monde_batch01', path: 'data/jeux/monde_batch01.json', label: '🌍 Monde Bloc 1', emoji: '🌍' },
 ];
 
 let allJeux = [];
