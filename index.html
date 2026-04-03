@@ -7,7 +7,8 @@
   <meta name="description" content="Banque mondiale de jeux sportifs pour l'éducation physique — Zone Total Sport">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schoolbell&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schoolbell&family=Fredoka:wght@400;500;600;700&family=Fredoka+One&family=Patrick+Hand&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>.hidden{display:none!important}</style>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -69,47 +70,34 @@
       </div>
     </header>
 
-    <!-- Hero section -->
-    <section class="hero">
-      <div class="hero-inner">
-        <img src="img/bucheron-salut.png" alt="Mascotte bûcheron" class="hero-mascot hero-mascot-left">
-        <div class="hero-center">
-          <div class="hero-badge">🌍 Base de données mondiale</div>
-          <h1 class="hero-title">
-            <span class="gradient-text">Jeux Sportifs</span><br>
-            <span class="gradient-text-alt">Mondiaux</span>
-          </h1>
-          <p class="hero-subtitle">
-            La plus grande banque de jeux sportifs pour l'éducation physique au Québec.<br>
-            Jeux traditionnels, sports collectifs, activités autochtones et bien plus.
-          </p>
-        <div class="hero-counters">
-          <div class="counter-card">
-            <span class="counter-num" data-count="0" id="counter-jeux">0</span>
-            <span class="counter-label">Jeux recensés</span>
+    <!-- HERO LANDING -->
+    <div id="heroLanding" style="max-width:900px;margin:20px auto;padding:0 16px">
+      <div style="background:rgba(26,26,62,0.88);backdrop-filter:blur(8px);border-radius:24px;padding:28px;border:1px solid rgba(0,229,255,0.2);display:flex;flex-wrap:wrap;align-items:center;gap:24px;justify-content:center">
+        <img src="https://zonetotalsport.ca/bucheron-jeux.png" alt="Mascotte" style="width:130px;height:auto;filter:drop-shadow(3px 3px 10px rgba(0,0,0,0.5));border-radius:16px;flex-shrink:0">
+        <div style="flex:1;min-width:250px;text-align:center">
+          <h2 style="font-family:'Luckiest Guy',cursive;font-size:clamp(1.5rem,4vw,2.5rem);color:#fff;margin:0 0 10px;line-height:1.15">BANQUE DE JEUX <span style="color:#00E5FF">SPORTIFS MONDIAUX!</span></h2>
+          <p style="font-family:'Patrick Hand',cursive;font-size:1.05rem;color:#ccc;margin:0 0 14px;line-height:1.5">Plus de 1000 jeux sportifs du monde entier, classes par categorie, age et competence. Filtre par sport, niveau et nombre de joueurs. Chaque jeu a sa fiche complete avec regles, variantes et materiel requis. Trouve le jeu parfait en 10 secondes — tes cours ne seront plus jamais les memes!</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px">
+            <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,229,255,0.15);color:#00E5FF;font-family:'Fredoka One',cursive;font-size:0.8rem;padding:4px 12px;border-radius:999px">🎮 1000+ Jeux</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,229,255,0.15);color:#00E5FF;font-family:'Fredoka One',cursive;font-size:0.8rem;padding:4px 12px;border-radius:999px">🌍 50+ Pays</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,229,255,0.15);color:#00E5FF;font-family:'Fredoka One',cursive;font-size:0.8rem;padding:4px 12px;border-radius:999px">🔍 Filtres avances</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,229,255,0.15);color:#00E5FF;font-family:'Fredoka One',cursive;font-size:0.8rem;padding:4px 12px;border-radius:999px">📋 Fiches completes</span>
           </div>
-          <div class="counter-card">
-            <span class="counter-num">16</span>
-            <span class="counter-label">Catégories</span>
-          </div>
-          <div class="counter-card">
-            <span class="counter-num">5</span>
-            <span class="counter-label">Niveaux scolaires</span>
-          </div>
-          <div class="counter-card">
-            <span class="counter-num">50+</span>
-            <span class="counter-label">Pays représentés</span>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button onclick="document.getElementById('heroLanding').style.display='none'" style="font-family:'Fredoka One',cursive;background:linear-gradient(135deg,#00E5FF,#0097A7);color:#fff;border:none;border-radius:999px;padding:10px 24px;font-size:1rem;cursor:pointer">🚀 Commencer!</button>
+            <button onclick="document.getElementById('guideSection').classList.toggle('hidden')" style="font-family:'Fredoka One',cursive;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:10px 24px;font-size:1rem;cursor:pointer">📖 Comment utiliser</button>
           </div>
         </div>
-        <div class="hero-sports-icons">
-          <span>⚽</span><span>🏀</span><span>🏐</span><span>🏈</span><span>🎾</span>
-          <span>🏸</span><span>🥊</span><span>🤸</span><span>🏊</span><span>🎯</span>
-          <span>🪃</span><span>🏹</span>
-        </div>
-        </div>
-        <img src="img/bucheron-pointer.png" alt="Mascotte bûcheron" class="hero-mascot hero-mascot-right">
       </div>
-    </section>
+      <div id="guideSection" class="hidden" style="margin-top:12px;background:rgba(26,26,62,0.88);backdrop-filter:blur(8px);border-radius:24px;padding:24px;border:1px solid rgba(0,229,255,0.2)">
+        <h3 style="font-family:'Luckiest Guy',cursive;font-size:1.5rem;color:#fff;margin:0 0 14px">📖 COMMENT UTILISER</h3>
+        <p style="font-family:'Patrick Hand',cursive;font-size:1rem;color:#ccc;line-height:1.6;margin:0">
+          <strong style="color:#00E5FF">1)</strong> Utilise les <strong style="color:#fff">FILTRES</strong> en haut pour trouver un jeu par sport, cycle ou nombre de joueurs.<br>
+          <strong style="color:#00E5FF">2)</strong> Clique sur un jeu pour voir la <strong style="color:#fff">FICHE COMPLETE</strong> avec regles, variantes et materiel.<br>
+          <strong style="color:#00E5FF">3)</strong> <strong style="color:#fff">IMPRIME</strong> la fiche ou partage-la avec tes collegues.
+        </p>
+      </div>
+    </div>
 
     <!-- Barre de filtres -->
     <section class="controls-section">
