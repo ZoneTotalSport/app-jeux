@@ -194,7 +194,7 @@ img {
   inset: 0;
   z-index: 0;
   background: url('gym-bg.png') center/cover no-repeat;
-  opacity: 0.92;
+  opacity: 1;
   pointer-events: none;
 }
 
