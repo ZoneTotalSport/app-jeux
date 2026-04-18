@@ -10,6 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&family=Schoolbell&display=swap" rel="stylesheet">
   <style>.hidden{display:none!important}</style>
   <link rel="stylesheet" href="style.css">
+  <!-- ZTS Landing Template -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&family=Schoolbell&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="zts-landing.css">
 </head>
 <body>
   <!-- Gym background -->
@@ -194,6 +197,49 @@
   <script src="i18n.js?v=2"></script>
   <script src="lang/translations.js?v=2"></script>
   <script src="app.js?v=2"></script>
+<!-- ZTS Landing config + script -->
+<script>
+window.ZTS_LANDING_CONFIG = {
+  appId: 'jeux',
+  accentColor: '#FFD600',
+  homeUrl: 'https://zonetotalsport.ca',
+  mascot: 'https://zonetotalsport.ca/bucheron-jeux.png',
+  logoIcon: 'https://zonetotalsport.ca/logo-zts.png',
+  logoTitle: { fr: 'Banque de Jeux', en: 'Games Library', zh: '游戏库' },
+  logoSub: 'Zone Total Sport',
+  title: { fr: 'Banque de Jeux', en: 'Games Library', zh: '运动游戏库' },
+  subtitle: { fr: '1000+ jeux sportifs!', en: '1000+ sport games!', zh: '1000+ 运动游戏!' },
+  description: {
+    fr: "Plus de 1000 jeux sportifs classés par âge, discipline et matériel. Filtre, recherche, imprime et lance tes jeux en quelques secondes. Parfait pour animer ton gym, ton camp ou ton service de garde.",
+    en: "Over 1000 sport games sorted by age, discipline and equipment. Filter, search, print and launch your games in seconds. Perfect for your gym, camp or daycare.",
+    zh: "超过 1000 款运动游戏,按年龄、项目和器材分类。几秒钟内筛选、搜索、打印并启动游戏。非常适合健身房、营地或托儿所。"
+  },
+  badges: [
+    { emoji: '🏀', color: 'yellow', text: { fr: '1000+ jeux', en: '1000+ games', zh: '1000+ 游戏' } },
+    { emoji: '👶', color: 'cyan',   text: { fr: 'Tous âges', en: 'All ages', zh: '各年龄段' } },
+    { emoji: '🔍', color: 'pink',   text: { fr: 'Filtres puissants', en: 'Powerful filters', zh: '强大筛选' } },
+    { emoji: '🖨️', color: 'green',  text: { fr: 'Fiche imprimable', en: 'Printable cards', zh: '可打印卡片' } },
+    { emoji: '🌐', color: 'violet', text: { fr: 'Multilingue', en: 'Multilingual', zh: '多语言' } }
+  ],
+  features: [
+    { emoji: '⚽', title: { fr: 'Multi-sports', en: 'Multi-sport', zh: '多运动' }, desc: { fr: 'Ballons, raquettes, athlétisme, coopératifs', en: 'Balls, rackets, athletics, cooperative', zh: '球类、球拍、田径、合作' } },
+    { emoji: '🎯', title: { fr: 'Par objectif', en: 'By goal', zh: '按目标' }, desc: { fr: 'Échauffement, cardio, concentration, retour au calme', en: 'Warm-up, cardio, focus, cool-down', zh: '热身、有氧、专注、放松' } },
+    { emoji: '📏', title: { fr: 'Par espace', en: 'By space', zh: '按空间' }, desc: { fr: 'Gymnase, cour, classe, petit espace', en: 'Gym, yard, classroom, small space', zh: '体育馆、操场、教室、小空间' } },
+    { emoji: '👥', title: { fr: 'Par groupe', en: 'By group', zh: '按组' }, desc: { fr: 'Individuel, duo, équipes, grand groupe', en: 'Solo, pair, teams, large group', zh: '单人、双人、小组、大组' } },
+    { emoji: '⏱️', title: { fr: 'Durée', en: 'Duration', zh: '时长' }, desc: { fr: '5, 10, 20 min — trouve le bon format', en: '5, 10, 20 min — find the right format', zh: '5、10、20 分钟' } },
+    { emoji: '🧰', title: { fr: 'Matériel', en: 'Equipment', zh: '器材' }, desc: { fr: 'Cônes, dossards, cerceaux, ou zéro matériel', en: 'Cones, bibs, hoops or no gear', zh: '锥筒、号坎、呼啦圈或无器材' } },
+    { emoji: '⭐', title: { fr: 'Favoris', en: 'Favorites', zh: '收藏' }, desc: { fr: 'Garde tes jeux coup de cœur à portée de clic', en: 'Keep your favorite games one click away', zh: '常用游戏一键即达' } },
+    { emoji: '📱', title: { fr: 'Mobile', en: 'Mobile', zh: '手机' }, desc: { fr: 'Fonctionne au gym, dans ta poche', en: 'Works in the gym, in your pocket', zh: '随身带到体育馆' } }
+  ],
+  ctaStart: { label: { fr: 'Commencer!', en: 'Start!', zh: '开始!' } },
+  ctaHelp: {
+    label: { fr: 'Comment utiliser', en: 'How to use', zh: '使用说明' },
+    onClick: function () { window.open('https://zonetotalsport.ca/articles/jeux-guide.html', '_blank'); }
+  }
+};
+</script>
+<script src="zts-landing.js"></script>
+
 <!-- ZTS Auth Gate -->
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schoolbell&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
