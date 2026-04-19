@@ -632,11 +632,16 @@ function openModal(jeu) {
   const duree = loc(jeu.duree || jeu.duree_minutes) || '';
   const objectifs = locArray(jeu.objectifs || jeu.competences);
   const disposition = loc(jeu.disposition) || '';
-  const adaptations = loc(jeu.adaptations_besoins_speciaux) || '';
+  const adaptations = jeu.adaptations_besoins_speciaux || '';
   const intentions = loc(jeu.intentions_pedagogiques) || '';
   const nomsAlt = locArray(jeu.noms_alternatifs);
   const compMotrices = locArray(jeu.competences_motrices);
   const valeurs = locArray(jeu.valeurs);
+  const roleEnseignant = loc(jeu.role_enseignant) || '';
+  const retourCalme = loc(jeu.retour_au_calme) || '';
+  const questionsReflexion = locArray(jeu.questions_reflexion);
+  const progression = locArray(jeu.progression);
+  const erreursFrequentes = locArray(jeu.erreurs_frequentes);
   const emoji = getCategoryEmoji(jeu._source);
 
   const modalFav = isFavori(jeu);
@@ -717,13 +722,23 @@ function openModal(jeu) {
     ${variantes.length ? `
     <div class="modal-section">
       <h3>💡 ${t('variantes', 'Variantes')}</h3>
-      <ul>${variantes.map(v => `<li>${escapeHtml(itemToString(loc(v)))}</li>`).join('')}</ul>
+      <ul>${variantes.map(v => {
+        if (typeof v === 'object' && v.nom) {
+          return `<li><strong>${escapeHtml(loc(v.nom))}</strong>${v.niveau_difficulte ? ` <span class="tag tag-niveau">${escapeHtml(v.niveau_difficulte)}</span>` : ''}<br>${escapeHtml(loc(v.description))}</li>`;
+        }
+        return `<li>${escapeHtml(itemToString(loc(v)))}</li>`;
+      }).join('')}</ul>
     </div>` : ''}
 
-    ${adaptations ? `
+    ${adaptations && (Array.isArray(adaptations) ? adaptations.length : adaptations) ? `
     <div class="modal-section">
       <h3>♿ ${t('adaptations', 'Adaptations')}</h3>
-      <p>${escapeHtml(adaptations)}</p>
+      ${Array.isArray(adaptations) ? `<ul>${adaptations.map(a => {
+        if (typeof a === 'object' && a.type) {
+          return `<li><strong>${escapeHtml(a.type)}</strong><br>${escapeHtml(a.adaptation)}</li>`;
+        }
+        return `<li>${escapeHtml(itemToString(loc(a)))}</li>`;
+      }).join('')}</ul>` : `<p>${escapeHtml(String(adaptations))}</p>`}
     </div>` : ''}
 
     ${compMotrices.length ? `
@@ -742,6 +757,36 @@ function openModal(jeu) {
     <div class="modal-section">
       <h3>🛡️ ${t('securite', 'Sécurité')}</h3>
       <ul>${consignes_securite.map(s => `<li>${escapeHtml(itemToString(loc(s)))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${roleEnseignant ? `
+    <div class="modal-section">
+      <h3>👨‍🏫 Rôle de l'enseignant</h3>
+      <p>${escapeHtml(roleEnseignant)}</p>
+    </div>` : ''}
+
+    ${progression.length ? `
+    <div class="modal-section">
+      <h3>📈 Progression</h3>
+      <ol>${progression.map(p => `<li>${escapeHtml(itemToString(loc(p)))}</li>`).join('')}</ol>
+    </div>` : ''}
+
+    ${erreursFrequentes.length ? `
+    <div class="modal-section">
+      <h3>⚠️ Erreurs fréquentes</h3>
+      <ul>${erreursFrequentes.map(e => `<li>${escapeHtml(itemToString(loc(e)))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${questionsReflexion.length ? `
+    <div class="modal-section">
+      <h3>💬 Questions de réflexion</h3>
+      <ul>${questionsReflexion.map(q => `<li>${escapeHtml(itemToString(loc(q)))}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${retourCalme ? `
+    <div class="modal-section">
+      <h3>🧘 Retour au calme</h3>
+      <p>${escapeHtml(retourCalme)}</p>
     </div>` : ''}
   `;
 

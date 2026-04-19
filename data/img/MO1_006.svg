@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 300" font-family="'Luckiest Guy', 'Bangers', Arial, sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&amp;family=Bangers&amp;display=swap');</style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4CAF50"/>
+    </marker>
+  </defs>
+
+  <!-- Background gymnase avec buts de hockey -->
+  <image xlink:href="../../img/gymnase_avec_buts.png" x="0" y="0" width="500" height="300" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Titre -->
+  <rect x="60" y="2" width="380" height="28" rx="8" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+  <text x="250" y="23" text-anchor="middle" font-size="14" fill="#1a1a1a" font-family="'Luckiest Guy'">🦀 SOCCER EN CRABE</text>
+
+  <!-- === ÉQUIPE A (jaune/Root) - côté gauche === -->
+  <!-- Root regarde vers la droite (naturel, pas de miroir) -->
+  <image xlink:href="../../img/poses/root_en_crabe.png" x="80" y="75" width="55" height="45"/>
+  <image xlink:href="../../img/poses/root_en_crabe.png" x="95" y="165" width="55" height="45"/>
+  <image xlink:href="../../img/poses/root_en_crabe.png" x="145" y="120" width="55" height="45"/>
+
+  <!-- Badge équipe A -->
+  <rect x="75" y="42" width="50" height="16" rx="4" fill="#B8960F" opacity="0.85"/>
+  <text x="100" y="54" text-anchor="middle" font-size="9" fill="white" font-family="'Bangers'">ÉQ. A</text>
+
+  <!-- === ÉQUIPE B (bleu/Joe) - côté droite === -->
+  <!-- Joe miroir pour regarder vers la gauche -->
+  <g transform="translate(500, 0) scale(-1, 1)">
+    <image xlink:href="../../img/poses/joe_en_crabe.png" x="140" y="75" width="55" height="45"/>
+  </g>
+  <g transform="translate(500, 0) scale(-1, 1)">
+    <image xlink:href="../../img/poses/joe_en_crabe.png" x="155" y="165" width="55" height="45"/>
+  </g>
+  <g transform="translate(500, 0) scale(-1, 1)">
+    <image xlink:href="../../img/poses/joe_en_crabe.png" x="200" y="120" width="55" height="45"/>
+  </g>
+
+  <!-- Badge équipe B -->
+  <rect x="375" y="42" width="50" height="16" rx="4" fill="#1976D2" opacity="0.85"/>
+  <text x="400" y="54" text-anchor="middle" font-size="9" fill="white" font-family="'Bangers'">ÉQ. B</text>
+
+  <!-- === BALLON au centre (simple cercle blanc) === -->
+  <circle cx="250" cy="145" r="7" fill="#fff" stroke="#555" stroke-width="1"/>
+
+  <!-- Flèche : ballon poussé vers but B -->
+  <path d="M260,145 C290,143 320,140 350,138" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="4,3"/>
+
+  <!-- === LÉGENDE === -->
+  <g transform="translate(70, 272)">
+    <rect x="0" y="0" width="360" height="24" rx="6" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+    <image xlink:href="../../img/poses/root_en_crabe.png" x="8" y="2" width="24" height="18"/>
+    <text x="38" y="16" font-size="9" fill="#B8960F" font-family="'Bangers'">Éq. A</text>
+    <image xlink:href="../../img/poses/joe_en_crabe.png" x="75" y="2" width="24" height="18"/>
+    <text x="105" y="16" font-size="9" fill="#1976D2" font-family="'Bangers'">Éq. B</text>
+    <circle cx="150" cy="12" r="5" fill="#fff" stroke="#333" stroke-width="0.8"/>
+    <text x="162" y="16" font-size="9" fill="#333" font-family="'Bangers'">Ballon</text>
+    <line x1="210" y1="12" x2="240" y2="12" stroke="#4CAF50" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="246" y="16" font-size="9" fill="#4CAF50" font-family="'Bangers'">Direction</text>
+  </g>
+</svg>

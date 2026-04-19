@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 700 400" font-family="'Luckiest Guy', 'Bangers', Arial, sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&amp;family=Bangers&amp;display=swap');</style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#FFD600"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#e53935"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#1976D2"/>
+    </marker>
+    <clipPath id="gymClip"><rect x="10" y="40" width="680" height="310" rx="10"/></clipPath>
+  </defs>
+
+  <!-- Background gymnase -->
+  <image xlink:href="../../img/gymnase.png" x="0" y="0" width="700" height="400" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="700" height="400" fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Plancher -->
+  <image xlink:href="../../img/gymnase-plancher.png" x="10" y="40" width="680" height="310" clip-path="url(#gymClip)" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="10" y="40" width="680" height="310" rx="10" fill="none" stroke="#8B6914" stroke-width="2"/>
+
+  <!-- Titre -->
+  <rect x="80" y="3" width="540" height="34" rx="10" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+  <text x="350" y="28" text-anchor="middle" font-size="18" fill="#1a1a1a" font-family="'Luckiest Guy'">🪂 BALLON PARACHUTE</text>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_secoue_parachute.png" x="160" y="130" width="90" height="90"/></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_secoue_parachute.png" x="310" y="100" width="90" height="90"/></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_secoue_parachute.png" x="450" y="130" width="90" height="90"/></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_secoue_parachute.png" x="230" y="230" width="90" height="90"/></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_secoue_parachute.png" x="390" y="230" width="90" height="90"/></g>
+  <rect x="306" y="195" width="88" height="20" rx="5" fill="#9C27B0" opacity="0.9"/>
+  <text x="350" y="210" text-anchor="middle" font-size="11" fill="white" font-family="'Bangers'">PARACHUTE</text>
+  <g transform="translate(233, 358)">
+    <rect x="0" y="0" width="254" height="38" rx="8" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+    <image xlink:href="../../img/poses/root_secoue_parachute.png" x="15" y="3" width="30" height="30"/>
+    <text x="50" y="25" font-size="12" fill="#9C27B0" font-family="'Bangers'">Autour du parachute</text>
+  </g>
+</svg>

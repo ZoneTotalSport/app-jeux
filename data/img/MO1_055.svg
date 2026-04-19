@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 700 400" font-family="'Luckiest Guy', 'Bangers', Arial, sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&amp;family=Bangers&amp;display=swap');</style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#FFD600"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#e53935"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#1976D2"/>
+    </marker>
+    <clipPath id="gymClip"><rect x="10" y="40" width="680" height="310" rx="10"/></clipPath>
+  </defs>
+
+  <!-- Background gymnase -->
+  <image xlink:href="../../img/gymnase.png" x="0" y="0" width="700" height="400" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="700" height="400" fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Plancher -->
+  <image xlink:href="../../img/gymnase-plancher.png" x="10" y="40" width="680" height="310" clip-path="url(#gymClip)" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="10" y="40" width="680" height="310" rx="10" fill="none" stroke="#8B6914" stroke-width="2"/>
+
+  <!-- Titre -->
+  <rect x="80" y="3" width="540" height="34" rx="10" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+  <text x="350" y="28" text-anchor="middle" font-size="18" fill="#1a1a1a" font-family="'Luckiest Guy'">💯 CINQ CENTS</text>
+  <g filter="url(#shadow)"><g transform="translate(390, 0) scale(-1, 1)"><image xlink:href="../../img/poses/root_lance_ballon.png" x="150" y="150" width="90" height="90"/></g></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/roots_qui_attrape_le_ballon.png" x="400" y="120" width="80" height="80"/></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/roots_qui_attrape_le_ballon.png" x="450" y="220" width="80" height="80"/></g>
+  <path d="M240,195 C290,182 350,170 390,165" stroke="#4CAF50" stroke-width="4" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="10,5"/>
+  <rect x="155" y="245" width="80" height="20" rx="5" fill="#FF9800" opacity="0.9"/>
+  <text x="195" y="260" text-anchor="middle" font-size="11" fill="white" font-family="'Bangers'">100 PTS!</text>
+  <g transform="translate(222, 358)">
+    <rect x="0" y="0" width="276" height="38" rx="8" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+    <image xlink:href="../../img/poses/root_lance_ballon.png" x="15" y="3" width="30" height="30"/>
+    <text x="50" y="25" font-size="12" fill="#FF9800" font-family="'Bangers'">Lanceur</text>
+    <image xlink:href="../../img/poses/roots_qui_attrape_le_ballon.png" x="121" y="3" width="30" height="30"/>
+    <text x="156" y="25" font-size="12" fill="#1976D2" font-family="'Bangers'">Attrape</text>
+  </g>
+</svg>

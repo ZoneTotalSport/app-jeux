@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 700 400" font-family="'Luckiest Guy', 'Bangers', Arial, sans-serif">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&amp;family=Bangers&amp;display=swap');
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#FFD600"/>
+    </marker>
+    <clipPath id="gymClip">
+      <rect x="10" y="40" width="680" height="310" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Titre -->
+  <rect x="150" y="3" width="400" height="34" rx="10" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+  <text x="350" y="28" text-anchor="middle" font-size="20" fill="#1a1a1a" font-family="'Luckiest Guy'">🐶 BRITISH BULLDOG</text>
+
+  <!-- Background gymnase (image complète) -->
+  <image xlink:href="../../img/gymnase.png" x="0" y="0" width="700" height="400" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="700" height="400" fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Plancher de gymnase (zone de jeu) -->
+  <clipPath id="gymClip2">
+    <rect x="10" y="40" width="680" height="310" rx="10"/>
+  </clipPath>
+  <image xlink:href="../../img/gymnase-plancher.png" x="10" y="40" width="680" height="310" clip-path="url(#gymClip2)" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="10" y="40" width="680" height="310" rx="10" fill="none" stroke="#8B6914" stroke-width="2"/>
+
+  <!-- Texte DÉPART (gauche) -->
+  <text x="36" y="200" text-anchor="middle" font-size="14" fill="white" font-family="'Bangers'" letter-spacing="2" transform="rotate(-90, 36, 200)">DÉPART</text>
+
+  <!-- Texte ARRIVÉE (droite) -->
+  <text x="665" y="200" text-anchor="middle" font-size="14" fill="white" font-family="'Bangers'" letter-spacing="2" transform="rotate(90, 665, 200)">ARRIVÉE</text>
+
+  <!-- BULLDOG au centre (gardien de but, symétrie pour regarder à gauche) -->
+  <g filter="url(#shadow)">
+    <image xlink:href="../../img/poses/root_gardien_de_but.png" x="310" y="130" width="100" height="100"/>
+    <rect x="320" y="232" width="80" height="22" rx="6" fill="#e53935"/>
+    <text x="360" y="248" text-anchor="middle" font-size="13" fill="white" font-family="'Bangers'">BULLDOG</text>
+  </g>
+
+  <!-- JOUEUR qui court vers la droite (miroir horizontal) -->
+  <g filter="url(#shadow)">
+    <g transform="translate(405, 0) scale(-1, 1)">
+      <image xlink:href="../../img/poses/root_cour_de_peur.png" x="155" y="135" width="95" height="95"/>
+    </g>
+  </g>
+
+  <!-- Flèche joueur → arrivée (verte) -->
+  <path d="M250,185 C380,175 520,170 635,180" stroke="#4CAF50" stroke-width="4" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="10,5"/>
+
+  <!-- Flèche bulldog → joueur (jaune) -->
+  <path d="M325,185 C295,185 270,185 255,185" stroke="#FFD600" stroke-width="4" fill="none" marker-end="url(#arrowYellow)"/>
+
+  <!-- Légende -->
+  <g transform="translate(100, 358)">
+    <rect x="0" y="0" width="500" height="38" rx="8" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+    <image xlink:href="../../img/poses/root_cour_de_peur.png" x="15" y="3" width="30" height="30"/>
+    <text x="52" y="25" font-size="12" fill="#1976D2" font-family="'Bangers'">Joueur</text>
+    <image xlink:href="../../img/poses/root_gardien_de_but.png" x="120" y="3" width="30" height="30"/>
+    <text x="157" y="25" font-size="12" fill="#e53935" font-family="'Bangers'">Bulldog</text>
+    <line x1="230" y1="19" x2="270" y2="19" stroke="#4CAF50" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="278" y="25" font-size="12" fill="#4CAF50" font-family="'Bangers'">Traverser</text>
+    <line x1="360" y1="19" x2="400" y2="19" stroke="#FFD600" stroke-width="3"/>
+    <text x="408" y="25" font-size="12" fill="#FFD600" font-family="'Bangers'">Taguer</text>
+  </g>
+</svg>

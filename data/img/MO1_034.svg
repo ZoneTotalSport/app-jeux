@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 700 400" font-family="'Luckiest Guy', 'Bangers', Arial, sans-serif">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&amp;family=Bangers&amp;display=swap');</style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#4CAF50"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#FFD600"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#e53935"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#1976D2"/>
+    </marker>
+    <clipPath id="gymClip"><rect x="10" y="40" width="680" height="310" rx="10"/></clipPath>
+  </defs>
+
+  <!-- Background gymnase -->
+  <image xlink:href="../../img/gymnase.png" x="0" y="0" width="700" height="400" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="700" height="400" fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Plancher -->
+  <image xlink:href="../../img/gymnase-plancher.png" x="10" y="40" width="680" height="310" clip-path="url(#gymClip)" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="10" y="40" width="680" height="310" rx="10" fill="none" stroke="#8B6914" stroke-width="2"/>
+
+  <!-- Titre -->
+  <rect x="80" y="3" width="540" height="34" rx="10" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+  <text x="350" y="28" text-anchor="middle" font-size="18" fill="#1a1a1a" font-family="'Luckiest Guy'">🐝 ABEILLES ET PAPILLONS</text>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_joue_à_la_tag.png" x="300" y="130" width="85" height="85"/></g>
+  <g filter="url(#shadow)"><g transform="translate(380, 0) scale(-1, 1)"><image xlink:href="../../img/poses/root_cour_de_peur.png" x="150" y="150" width="80" height="80"/></g></g>
+  <g filter="url(#shadow)"><image xlink:href="../../img/poses/root_évite_de_se_faire_toucher.png" x="460" y="150" width="80" height="80"/></g>
+  <path d="M300,175 C270,178 250,182 235,185" stroke="#FFD600" stroke-width="4" fill="none" marker-end="url(#arrowYellow)"/>
+  <rect x="306" y="220" width="72" height="20" rx="5" fill="#FF9800" opacity="0.9"/>
+  <text x="342" y="235" text-anchor="middle" font-size="11" fill="white" font-family="'Bangers'">ABEILLE</text>
+  <rect x="460" y="235" width="80" height="20" rx="5" fill="#1976D2" opacity="0.9"/>
+  <text x="500" y="250" text-anchor="middle" font-size="11" fill="white" font-family="'Bangers'">PAPILLON</text>
+  <g transform="translate(218, 358)">
+    <rect x="0" y="0" width="284" height="38" rx="8" fill="rgba(255,255,255,0.92)" filter="url(#shadow)"/>
+    <image xlink:href="../../img/poses/root_joue_à_la_tag.png" x="15" y="3" width="30" height="30"/>
+    <text x="50" y="25" font-size="12" fill="#FF9800" font-family="'Bangers'">Abeille</text>
+    <image xlink:href="../../img/poses/root_cour_de_peur.png" x="121" y="3" width="30" height="30"/>
+    <text x="156" y="25" font-size="12" fill="#1976D2" font-family="'Bangers'">Papillon</text>
+  </g>
+</svg>
